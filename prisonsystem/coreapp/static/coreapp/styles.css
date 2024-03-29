@@ -1,57 +1,123 @@
-body, html {
-    height: 100%;
-    margin: 0;
-    font-family: 'Arial', sans-serif;
-    background: #f5f5f5; /* Modern light grey background */
-  }
-  
-  .wrapper {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-  }
-  
-  .container {
-    background: white;
-    padding: 40px;
-    text-align: center;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  }
-  
-  h1 {
-    color: #333; /* Dark grey color for the text */
-    margin-bottom: 30px;
-  }
-  
-  .form {
-    margin-top: 30px;
-  }
-  
-  input[type="button"] {
-    border: none;
-    padding: 10px 20px;
-    margin: 10px;
-    border-radius: 5px;
-    background: #008CBA; /* Modern blue */
-    color: white;
-    cursor: pointer;
-    /* transition: background 0.3s ease, transform 0.1s ease; */
-  }
-  
-  input[type="button"]:hover {
-    background: #005f73; /* Darker shade of blue for hover state */
-    transform: translateY(-3px);
-  }
-  
-  input[type="button"]:active {
-    transform: translateY(-1px);
-  }
-  
+body,
+html {
+  height: 100%;
+  margin: 0;
+  font-family: 'Arial', sans-serif;
+  background: #f5f5f5;
+  /* Modern light grey background */
+}
 
-  
-  /* FOR LOGIN.HTML */
+.wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.container {
+  background: white;
+  padding: 40px;
+  text-align: center;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+  color: #333;
+  /* Dark grey color for the text */
+  margin-bottom: 30px;
+}
+
+.form {
+  margin-top: 30px;
+}
+
+input[type="button"] {
+  border: none;
+  padding: 10px 20px;
+  margin: 10px;
+  border-radius: 5px;
+  background: #008CBA;
+  /* Modern blue */
+  color: white;
+  cursor: pointer;
+  /* transition: background 0.3s ease, transform 0.1s ease; */
+}
+
+input[type="button"]:hover {
+  background: #005f73;
+  /* Darker shade of blue for hover state */
+  transform: translateY(-3px);
+}
+
+input[type="button"]:active {
+  transform: translateY(-1px);
+}
+
+
+
+/* LOOKUP */
+.lookup-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.lookup-container {
+  background: white;
+  padding: 40px;
+  text-align: center;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 350px;
+  /* Adjusted width for the lookup form */
+}
+
+.search-by-id,
+.search-by-name {
+  margin-bottom: 20px;
+}
+
+.search-button {
+  padding: 10px;
+  margin-left: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  background: #008CBA;
+  /* Using the modern blue from previous CSS */
+  color: white;
+  transition: background 0.3s ease, transform 0.1s ease;
+}
+
+.search-button:hover {
+  background: #005f73;
+  /* Darker shade for hover effect */
+  transform: translateY(-3px);
+}
+
+.search-button:active {
+  transform: translateY(-1px);
+}
+
+label {
+  display: block;
+  margin-top: 20px;
+}
+
+input[type="text"] {
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 5px;
+  width: calc(100% - 22px);
+  /* Adjust width to account for padding and border */
+}
+
+
+
+/* FOR LOGIN.HTML */
 
 .login-wrapper {
   display: flex;
@@ -66,11 +132,13 @@ body, html {
   text-align: center;
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  width: 300px; /* Adjusted width for better proportion */
+  width: 300px;
+  /* Adjusted width for better proportion */
 }
 
 h1 {
-  color: #333; /* Dark grey color for the text */
+  color: #333;
+  /* Dark grey color for the text */
   margin-bottom: 30px;
 }
 
@@ -80,12 +148,14 @@ h1 {
   align-items: center;
 }
 
-input[type="email"], input[type="password"] {
+input[type="email"],
+input[type="password"] {
   border: 1px solid #ccc;
   padding: 10px;
   margin: 10px 0;
   border-radius: 5px;
-  width: 100%; /* Full width of the form */
+  width: 100%;
+  /* Full width of the form */
 }
 
 .helper-text {
@@ -95,31 +165,120 @@ input[type="email"], input[type="password"] {
 }
 
 .helper-text a {
-  color: #008CBA; /* Modern blue */
+  color: #008CBA;
+  /* Modern blue */
   text-decoration: none;
   margin: 0 10px;
   transition: color 0.3s ease;
 }
 
 .helper-text a:hover {
-  color: #005f73; /* Darker shade of blue for hover state */
+  color: #005f73;
+  /* Darker shade of blue for hover state */
 }
 
 input[type="submit"] {
   border: none;
   padding: 10px 20px;
   border-radius: 5px;
-  background: #008CBA; /* Modern blue */
+  background: #008CBA;
+  /* Modern blue */
   color: white;
   cursor: pointer;
-  width: 100%; /* Full width of the form */
+  width: 100%;
+  /* Full width of the form */
 }
 
 input[type="submit"]:hover {
-  background: #005f73; /* Darker shade of blue for hover state */
+  background: #005f73;
+  /* Darker shade of blue for hover state */
   transform: translateY(-3px);
 }
 
 input[type="submit"]:active {
   transform: translateY(-1px);
+}
+
+/* FOR REGISTER PAGE*/
+.registration-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background-color: #f5f5f5;
+  /* Consistent light grey background */
+}
+
+.registration-container {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 300px;
+  /* Set a fixed width for the form */
+}
+
+.registration-form {
+  display: flex;
+  flex-direction: column;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="password"] {
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  /* Consistent styling for input fields */
+}
+
+.terms-service {
+  display: block;
+  position: relative;
+  padding-left: 35px;
+  margin-bottom: 20px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.terms-service input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 20px;
+  width: 20px;
+  background-color: #eee;
+  border-radius: 5px;
+}
+
+.terms-service:hover input~.checkmark {
+  background-color: #ccc;
+}
+
+.terms-service input:checked~.checkmark {
+  background-color: #2196F3;
+}
+
+.register-button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  background: #4CAF50;
+  /* Consistent green color for register button */
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.register-button:hover {
+  background-color: #45a049;
+  /* Slightly darker green on hover */
 }
