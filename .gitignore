@@ -1,0 +1,37 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Django stuff
+*.log
+*.sqlite3
+*.pyc
+
+# Environments
+.env
+.venv/
+venv/
+ENV/
+env/
+
+# Static files
+/static
+
+# Media files
+/media
+
+# Ignore sensitive data and local configuration
+local_settings.py
+
+# Ignore all migrations
+*/migrations/*
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
