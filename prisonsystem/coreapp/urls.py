@@ -13,7 +13,7 @@ urlpatterns = [
     path('results/officer/', views.officer_results, name='officer_results'),
     path('search/inmate/', views.inmate_search, name='inmate_search'),
     path('search/officer/', views.officer_search, name='officer_search'),
-    path('user/login/', views.user_login, name='user_login'),
-    path('user/profile/', views.user_profile, name='user_profile'),
-    path('user/register/', views.user_register, name='user_register'),
+    path('login/', views.user_login, name='user_login'),
+    path('profile/', views.user_profile, name='user_profile'),
+    path('register/', views.user_register, name='user_register'),
 ]
