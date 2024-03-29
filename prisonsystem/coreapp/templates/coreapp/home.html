@@ -8,6 +8,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Welcome to the City Jail Data Repository</title>
     <link rel="stylesheet" href="{% static 'coreapp/styles.css' %}">
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            document.getElementById("login-button").addEventListener("click", function () {
+                window.location.href = "/login";
+            });
+
+            document.getElementById("register-button").addEventListener("click", function () {
+                window.location.href = "/register";
+            });
+        });
+    </script>
 </head>
 
 <body>
@@ -18,6 +29,9 @@
                 <input type="button" value="Login" id="login-button">
                 <input type="button" value="Register" id="register-button">
             </form>
+            <div class="bottom-message">
+                <p>NYU TANDON SCHOOL OF ENGINEERING</p>
+            </div>
         </div>
     </div>
 </body>
