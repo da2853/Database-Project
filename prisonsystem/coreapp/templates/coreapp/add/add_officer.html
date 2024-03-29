@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Officer</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="add-officer-wrapper">
+        <div class="add-officer-container">
+            <h1>Add Officer</h1>
+            <form class="add-officer-form">
+                <label for="badge_number">Badge Number:</label>
+                <input type="text" id="badge_number" placeholder="00000">
+
+                <label for="first_name">First Name:</label>
+                <input type="text" id="first_name" placeholder="Suggestion">
+
+                <label for="last_name">Last Name:</label>
+                <input type="text" id="last_name" placeholder="Suggestion">
+
+                <label for="precinct">Precinct:</label>
+                <input type="text" id="precinct" placeholder="Suggestion">
+
+                <label for="status">Status:</label>
+                <input type="text" id="status" placeholder="Suggestion">
+
+                <h2>Crimes as Arresting Officer:</h2>
+                <!-- Repeat this input block for as many Crime IDs as needed -->
+                <label for="crime_id_1">Crime ID:</label>
+                <input type="text" id="crime_id_1" placeholder="Suggestion">
+
+                <button type="button" class="more-crimes-button">+More Crimes</button>
+
+                <input type="submit" value="Submit">
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>
