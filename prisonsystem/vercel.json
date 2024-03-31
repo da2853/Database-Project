@@ -3,7 +3,7 @@
     "builds": [
       {
         "src": "prisonsystem/wsgi.py",
-        "use": "@natanffs/vercel-python-wsg",
+        "use": "@natanffs/vercel-python-wsgi",
         "config": {"maxLambdaSize": "15mb", "runtime": "python3.9"}
       }
     ],
