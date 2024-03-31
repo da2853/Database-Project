@@ -1,18 +1,17 @@
+
 {
+    "version": 2,
     "builds": [
-        {
-            "src": "prisonsystem/wsgi.py",
-            "use": "@vercel/python",
-            "config": {
-                "runtime": "python3.9",
-                "maxLambdaSize": "15mb"
-            }
-        }
+      {
+        "src": "prisonsystem/wsgi.py",
+        "use": "@vercel/python",
+        "config": {"maxLambdaSize": "15mb", "runtime": "python3.9"}
+      }
     ],
     "routes": [
-        {
-            "src": "/(.*)",
-            "dest": "prisonsystem/wsgi.py"
-        }
+      {
+        "src": "/(.*)",
+        "dest": "dcrm/wsgi.py"
+      }
     ]
-}
+  }
