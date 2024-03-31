@@ -49,6 +49,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = "prisonsystem.urls"
@@ -116,19 +117,35 @@ USE_I18N = True
 
 USE_TZ = True
 
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+# Simplified static file serving.
+# https://warehouse.python.org/project/whitenoise/
+
+STATIC_URL = "/static/"
+
+WHITENOISE_USE_FINDERS = True
+
+if not DEBUG:
+    WHITENOISE_MANIFEST_STRICT = False
+else: 
+    MIDDLEWARE += ['whitenoise.middleware.WhiteNoiseMiddleware',]
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATIC_URL = "/static/"
+# STATIC_URL = "/static/"
 
-# Add the path to your static files
+# # Add the path to your static files
 STATICFILES_DIRS = [
     BASE_DIR / 'coreapp' / 'static' / 'coreapp',
 ]
 
-# Define a directory for collectstatic to collect static files to
-STATIC_ROOT = BASE_DIR / 'staticfiles'
+# # Define a directory for collectstatic to collect static files to
+# STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
