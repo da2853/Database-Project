@@ -22,8 +22,8 @@
             "dest": "prisonsystem/wsgi.py"
         },
         {
-            "src": "static/(.*)",
-            "dest": "static/$1"
+            "src": "/static/(.*)",
+            "dest": "/staticfiles/$1"
         }
     ]
 }
