@@ -2,7 +2,7 @@
 {
     "builds": [{
         "src": "prisonsystem/wsgi.py",
-        "use": "@natanffs/vercel-python-wsgi",
+        "use": "@vercel/python",
         "config": { "maxLambdaSize": "15mb"}
     }],
     "routes": [
