@@ -1,5 +1,13 @@
 {
+    "version": 2,
     "builds": [
+        {
+            "src": "build_files.sh",
+            "use": "@vercel/static-build",
+            "config": {
+                "distDir": "."
+            }
+        },
         {
             "src": "prisonsystem/wsgi.py",
             "use": "@vercel/python",
@@ -13,11 +21,6 @@
         {
             "src": "/(.*)",
             "dest": "prisonsystem/wsgi.py"
-        }
-        ,
-        {
-            "src": "/static/(.*)",
-            "dest": "/staticfiles/$1"
         }
     ]
 }
