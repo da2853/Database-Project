@@ -10,7 +10,7 @@
     "routes": [
       {
         "src": "/(.*)",
-        "dest": "dcrm/wsgi.py"
+        "dest": "prisonsystem/wsgi.py"
       }
     ]
   }
