@@ -1,39 +1,25 @@
-{% load static %}
-
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome to the City Jail Data Repository</title>
-    <link rel="stylesheet" href="{% static '/styles.css' %}">
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            document.getElementById("login-button").addEventListener("click", function () {
-                window.location.href = "/login";
-            });
-
-            document.getElementById("register-button").addEventListener("click", function () {
-                window.location.href = "/register";
-            });
-        });
-    </script>
+    <title>CSS Path Tester</title>
+    <!-- Trying various paths for style.css -->
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="staticfiles/styles.css">
+    <link rel="stylesheet" href="/staticfiles/styles.css">
+    <link rel="stylesheet" href="static/styles.css">
+    <link rel="stylesheet" href="/static/styles.css">
+    <link rel="stylesheet" href="prisonsystem/coreapp/static/coreapp/styles.css">
+    <link rel="stylesheet" href="/prisonsystem/coreapp/static/coreapp/styles.css">
+    <link rel="stylesheet" href="coreapp/static/coreapp/styles.css">
+    <link rel="stylesheet" href="/coreapp/static/coreapp/styles.css">
+    <link rel="stylesheet" href="vercel/path1/staticfiles/styles.css">
+    <link rel="stylesheet" href="/vercel/path1/staticfiles/styles.css">
 </head>
-
 <body>
-    <div class="wrapper">
-        <div class="container">
-            <h1>Welcome to the City Jail Data Repository</h1>
-            <form class="form">
-                <input type="button" value="Login" id="login-button">
-                <input type="button" value="Register" id="register-button">
-            </form>
-            <div class="bottom-message">
-                <p>NYU TANDON SCHOOL OF ENGINEERING</p>
-            </div>
-        </div>
-    </div>
+    <h1>CSS Path Tester</h1>
+    <p>If any of these paths are correct, this page's appearance should change.</p>
 </body>
-
 </html>

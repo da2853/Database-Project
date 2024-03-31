@@ -144,8 +144,8 @@ STATICFILES_DIRS = [
     BASE_DIR / 'coreapp' / 'static' / 'coreapp',
 ]
 
-# # Define a directory for collectstatic to collect static files to
-# STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# STATIC_ROOT = [BASE_DIR / 'staticfiles']
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
