@@ -1,8 +1,12 @@
-from django.shortcuts import render
+from django.contrib.auth import login
+from django.contrib.auth.forms import UserCreationForm
+from django.shortcuts import redirect, render
+from django.urls import reverse
+from prisonsystem.forms import UserRegisterForm
+
 
 def home(request):
     return render(request, 'coreapp/home.html')
-
 
 def add_inmate(request):
     return render(request, 'coreapp/add/add_inmate.html')
@@ -41,4 +45,12 @@ def user_profile(request):
     return render(request, 'coreapp/user/profile.html')
 
 def user_register(request):
-    return render(request, 'coreapp/user/register.html')
+    if request.method == 'POST':
+        form = UserRegisterForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect(reverse('')) 
+        form = UserRegisterForm()
+    return render(request, 'coreapp/user/register.html', {'form': form})
+
