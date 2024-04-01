@@ -138,7 +138,5 @@ STATICFILES_DIRS = [
     BASE_DIR / 'coreapp' / 'static' / 'coreapp',
 ]
 
-AUTH_USER_MODEL = 'prisonsystem.CustomUser'
-
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
