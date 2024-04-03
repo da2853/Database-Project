@@ -1,5 +1,6 @@
-from django.contrib.auth import login
+from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib import messages
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from .forms import UserRegisterForm
@@ -39,8 +40,16 @@ def officer_search(request):
     return render(request, 'coreapp/search/officer_search.html')
 
 def user_login(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('home')  
+        else:
+            messages.error(request, 'Invalid username or password')
     return render(request, 'coreapp/user/login.html')
-
 def user_profile(request):
     return render(request, 'coreapp/user/profile.html')
 
@@ -50,7 +59,7 @@ def user_register(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            return redirect(reverse('')) 
+            return redirect(reverse('home')) 
+    else:
         form = UserRegisterForm()
     return render(request, 'coreapp/user/register.html', {'form': form})
-
