@@ -1,5 +1,6 @@
 from django.contrib.auth import authenticate, login
-from django.contrib.auth.forms import UserCreationForm
+from django.views.decorators.csrf import csrf_protect
+from django.contrib.auth.models import User
 from django.contrib import messages
 from django.shortcuts import redirect, render
 from django.urls import reverse
@@ -39,27 +40,34 @@ def inmate_search(request):
 def officer_search(request):
     return render(request, 'coreapp/search/officer_search.html')
 
-def user_login(request):
-    if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)
-            return redirect('home')  
-        else:
-            messages.error(request, 'Invalid username or password')
-    return render(request, 'coreapp/user/login.html')
 def user_profile(request):
     return render(request, 'coreapp/user/profile.html')
+
+@csrf_protect
+def user_login(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        user = authenticate(request, username=email, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('home')
+        else:
+            messages.error(request, 'Invalid email or password')
+    return render(request, 'coreapp/user/login.html')
 
 def user_register(request):
     if request.method == 'POST':
         form = UserRegisterForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            login(request, user)
-            return redirect(reverse('home')) 
+            username = form.cleaned_data.get('username')
+            if User.objects.filter(username=username).exists():
+                form.add_error('username', 'Username already exists. Please choose a different one.')
+            else:
+                user = form.save()
+                login(request, user)
+                return redirect(reverse('home'))
     else:
         form = UserRegisterForm()
+
     return render(request, 'coreapp/user/register.html', {'form': form})

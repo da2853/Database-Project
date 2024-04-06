@@ -13,6 +13,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1', '.vercel.app']
 
+print("DB_HOST:", os.environ.get('DB_HOST'))
 
 # Application definition
 
@@ -64,14 +65,13 @@ WSGI_APPLICATION = "prisonsystem.wsgi.application"
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'DATABASE_NAME': os.environ.get('DB_NAME'),
-        'DATABASE_USER': os.environ.get('DB_USER'),
-        'DATABASE_PASSWORD': os.environ.get('DB_PASSWORD'),
-        'DATABASE_HOST': os.environ.get('DB_HOST'),
-        'DATABASE_PORT': os.environ.get('DATABASE_PORT'),
+        'NAME': os.environ.get('DB_NAME'),  
+        'USER': os.environ.get('DB_USER'), 
+        'PASSWORD': os.environ.get('DB_PASSWORD'),
+        'HOST': os.environ.get('DB_HOST'),
+        'PORT': os.environ.get('DATABASE_PORT'), 
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
