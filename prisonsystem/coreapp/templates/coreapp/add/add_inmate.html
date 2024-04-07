@@ -11,37 +11,47 @@
 </head>
 
 <body>
-    <header>
-        <nav>
-            <ul>
-                <li><a href="#">Home</a></li>
-                <li><a href="#">About</a></li>
-                <li><a href="#">Contact</a></li>
-                <li><a href="#">Profile</a></li>
-                <li><a href="#">Logout</a></li>
-            </ul>
-        </nav>
-    </header>
-    <div class="container">
-        <h1>Add Inmate</h1>
-        <div class="inmate-lookup-container">
-            <div class="search-id-container">
-                <h2>Search by Prisoner ID</h2>
-                <input type="text" id="search-prisoner-id" placeholder="Enter Prisoner ID">
-                <button type="submit" class="search-button">Search</button>
-            </div>
-            <div class="search-name-container">
-                <h2>Search by Name</h2>
-                <input type="text" placeholder="Last">
-                <input type="text" placeholder="First">
-                <input type="text" placeholder="Middle">
-                <input type="text" placeholder="Date of Birth (Month/Day/Year)">
-                <button type="submit" class="search-button">Search</button>
-            </div>
+    <div class="add-inmate-wrapper">
+        <div class="add-inmate-container">
+            <h1>Add Inmate</h1>
+            <form class="add-inmate-form">
+                <label for="Criminal ID">Criminal ID:</label>
+                <input type="text" id="criminal_id" placeholder="00000">
+
+                <label for="first_name">First Name:</label>
+                <input type="text" id="first_name" placeholder="Suggestion">
+
+                <label for="last_name">Last Name:</label>
+                <input type="text" id="last_name" placeholder="Suggestion">
+
+                <label for="address">Address:</label>
+                <input type="text" id="address" placeholder="Suggestion">
+
+                <label for="zip code">Zip Code:</label>
+                <input type="text" id="zip" placeholder="Suggestion">
+
+                <label for="city">City:</label>
+                <input type="text" id="city" placeholder="Suggestion">
+
+                <label for="phone">Phone #:</label>
+                <input type="number" id="phone" placeholder="Suggestion">
+
+                <label for="v_status">Violent Status:</label>
+                <select id="violent_status">
+
+                <option value="YES">YES</option> <option value="NO">NO</option> </select>
+
+                <label for="p_status">Probation Status:</label>
+                <select id="probation_status">
+
+                <option value="YES">YES</option> <option value="NO">NO</option> </select>
+
+                <button type="button" class="more-crimes-button">+More Crimes</button>
+
+                <input type="submit" value="Submit">
+            </form>
         </div>
-    <footer>
-        <p>2024 NYU School of Engineering</p>
-    </footer>
+    </div>
 </body>
 
 </html>
