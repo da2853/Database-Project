@@ -71,16 +71,10 @@ def user_register(request):
                 form.add_error('username', 'Username already exists. Please choose a different one.')
             else:
                 user = form.save()
-                
-                with connection.cursor() as cursor:
-                    cursor.execute("INSERT INTO users (first_name, last_name, username, email) VALUES (%s, %s, %s, %s)",
-                                   [user.first_name, user.last_name, user.username, user.email])
-                
                 login(request, user)
                 return redirect(reverse('query'))
     else:
         form = UserRegisterForm()
-
     return render(request, 'coreapp/user/register.html', {'form': form})
 
 @csrf_exempt
@@ -144,8 +138,3 @@ def execute_query(request):
             return JsonResponse({'success': False, 'error': str(e)})
 
     return JsonResponse({'success': False, 'error': 'Invalid request method.'})
-
-def log_user_activity(user_id, activity_description):
-    with connection.cursor() as cursor:
-        cursor.execute("INSERT INTO user_activity (user_id, activity_description) VALUES (%s, %s)",
-                       [user_id, activity_description])

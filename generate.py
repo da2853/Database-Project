@@ -160,7 +160,7 @@ def generate_officer_phone_data(file, num_records):
             number = generate_phone_number()
             file.write(f"INSERT INTO officer_phone (Badge_Number, Number) VALUES ({badge_number}, '{number}');")
 
-with open("insert_statements.sql", "w") as file:
+with open("insert_statements3.sql", "w") as file:
     num_records = 1000
     generate_criminals_data(file, num_records)
     generate_address_data(file, num_records)
