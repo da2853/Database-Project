@@ -16,5 +16,7 @@ urlpatterns = [
     path('login/', views.user_login, name='user_login'),
     path('profile/', views.user_profile, name='user_profile'),
     path('register/', views.user_register, name='user_register'),
-    path('accounts/', include('django.contrib.auth.urls'))
+    path('query/', views.query, name='query'),
+    path('accounts/', include('django.contrib.auth.urls')),
+    path('execute-query/', views.execute_query, name='execute_query'),
 ]

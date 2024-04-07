@@ -25,11 +25,11 @@
     <div class="login-container">
         <div class="login-form-container">
             <h1>Login</h1>
-            <form method="post" class="login-form">
+            <form method="post" class="login-form" action="{% url 'user_login' %}">
                 {% csrf_token %}
                 <div class="input-group">
                     <i class="fas fa-user"></i>
-                    <input type="text" name="username" placeholder="Username or Email" required>
+                    <input type="text" name="email" placeholder="Username or Email" required>
                 </div>
                 <div class="input-group">
                     <i class="fas fa-lock"></i>
