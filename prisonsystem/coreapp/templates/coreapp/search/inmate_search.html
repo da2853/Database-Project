@@ -1,24 +1,37 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inmate Lookup</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Add Inmate - City Jail Data Repository</title>
+    <link rel="stylesheet" href="{% static 'coreapp/add_inmate.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
 
 <body>
-    <div class="lookup-wrapper">
-        <div class="lookup-container">
-            <h1>Inmate Lookup</h1>
-            <div class="search-by-id">
-                <label for="prisoner-id">Search by Prisoner ID</label>
-                <input type="text" id="prisoner-id" placeholder="Enter Prisoner ID">
-                <button type="submit" class="search-button">🔍</button>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Contact</a></li>
+                <li><a href="#">Profile</a></li>
+                <li><a href="#">Logout</a></li>
+            </ul>
+        </nav>
+    </header>
+    <div class="container">
+        <h1>Add Inmate</h1>
+        <div class="inmate-lookup-container">
+            <div class="search-id-container">
+                <h2>Search by Prisoner ID</h2>
+                <input type="text" id="search-prisoner-id" placeholder="Enter Prisoner ID">
+                <button type="submit" class="search-button">Search</button>
             </div>
-            <div class="search-by-name">
-                <p>Search by Name</p>
+            <div class="search-name-container">
+                <h2>Search by Name</h2>
                 <input type="text" placeholder="Last">
                 <input type="text" placeholder="First">
                 <input type="text" placeholder="Middle">
@@ -26,7 +39,9 @@
                 <button type="submit" class="search-button">Search</button>
             </div>
         </div>
-    </div>
+    <footer>
+        <p>2024 NYU School of Engineering</p>
+    </footer>
 </body>
 
 </html>
