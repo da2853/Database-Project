@@ -1,4 +1,5 @@
 from django.contrib.auth import authenticate, login
+from django.db import transaction, IntegrityError
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from django.contrib.auth.decorators import login_required
@@ -52,7 +53,7 @@ def user_profile(request):
 @csrf_protect
 def user_login(request):
     if request.method == 'POST':
-        email = request.POST.get('email')
+        email = request.POST.get('username')
         password = request.POST.get('password')
         user = authenticate(request, username=email, password=password)
         if user is not None:
@@ -66,18 +67,33 @@ def user_register(request):
     if request.method == 'POST':
         form = UserRegisterForm(request.POST)
         if form.is_valid():
-            username = form.cleaned_data.get('username')
-            if User.objects.filter(username=username).exists():
-                form.add_error('username', 'Username already exists. Please choose a different one.')
-            else:
-                user = form.save()
-                login(request, user)
-                return redirect(reverse('query'))
+            username = form.cleaned_data.get('email')
+            password = form.cleaned_data.get('password1')
+            
+            try:
+                with transaction.atomic():
+                    if User.objects.filter(username=username).exists():
+                        form.add_error('email', 'Username already exists. Please choose a different one.')
+                    else:
+                        # Save the user
+                        user = form.save()
+                        role = 'read_only'
+
+                        # Create and grant roles in the database using raw SQL
+                        with connection.cursor() as cursor:
+                            cursor.execute('CREATE USER "%s" WITH PASSWORD \'%s\'' % (username, password))
+                            cursor.execute('GRANT %s TO "%s"' % (role, username))
+                        # Log in the user and redirect to another page
+                        login(request, user)
+                        return redirect(reverse('query'))
+
+            except IntegrityError:
+                form.add_error('email', 'This username is already taken. Please try again.')
+
     else:
         form = UserRegisterForm()
-    return render(request, 'coreapp/user/register.html', {'form': form})
 
-@csrf_exempt
+    return render(request, 'coreapp/user/register.html', {'form': form})
 @login_required
 def query(request):
     if request.method == 'POST':
@@ -89,43 +105,18 @@ def query(request):
                 return JsonResponse({'success': 'Query executed successfully.'})
         except Exception as e:
             return JsonResponse({'error': str(e)})
-
     return render(request, 'coreapp/query.html')
-
-
-@csrf_exempt
-@login_required
-def query_limited(request):
-    if request.method == 'POST':
-        sql_query = request.POST.get('query').strip()
-
-        if not sql_query.lower().startswith('select'):
-            return JsonResponse({'error': 'Only SELECT queries are allowed.'}, status=403)
-
-        try:
-            with connection.cursor() as cursor:
-                cursor.execute(sql_query)
-                rows = cursor.fetchall()
-                columns = [col[0] for col in cursor.description]
-                results = [dict(zip(columns, row)) for row in rows]
-
-                return JsonResponse({'success': 'Query executed successfully.', 'results': results})
-        except Exception as e:
-            return JsonResponse({'error': str(e)}, status=400)
-
-    return render(request, 'coreapp/query.html')
-
 
 @csrf_exempt
 @login_required
 def execute_query(request):
     if request.method == 'POST':
         sql_query = request.POST.get('query')
-
         try:
             with connection.cursor() as cursor:
+                cursor.execute("SET ROLE %s", [request.user.username])
                 cursor.execute(sql_query)
-
+                
                 if sql_query.lower().startswith('select'):
                     rows = cursor.fetchall()
                     columns = [col[0] for col in cursor.description]
@@ -133,8 +124,20 @@ def execute_query(request):
                     return JsonResponse({'success': True, 'results': results})
                 else:
                     return JsonResponse({'success': True, 'message': 'Query executed successfully.'})
-
         except Exception as e:
             return JsonResponse({'success': False, 'error': str(e)})
-
     return JsonResponse({'success': False, 'error': 'Invalid request method.'})
+
+@csrf_exempt
+@login_required
+def execute_raw_sql(request):
+    if request.method == 'POST':
+        sql_command = request.POST.get('sql_command')
+        try:
+            with connection.cursor() as cursor:
+                cursor.execute("SET ROLE %s", [request.user.username])
+                cursor.execute(sql_command)
+            return JsonResponse({'success': True})
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)}, status=400)
+    return JsonResponse({'success': False, 'error': 'Invalid request method.'}, status=400)
