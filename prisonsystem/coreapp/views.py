@@ -94,6 +94,8 @@ def user_register(request):
         form = UserRegisterForm()
 
     return render(request, 'coreapp/user/register.html', {'form': form})
+
+
 @login_required
 def query(request):
     if request.method == 'POST':
@@ -101,7 +103,6 @@ def query(request):
         try:
             with connection.cursor() as cursor:
                 cursor.execute(sql_query)
-                # Assuming you don't want to return actual data for security reasons
                 return JsonResponse({'success': 'Query executed successfully.'})
         except Exception as e:
             return JsonResponse({'error': str(e)})
@@ -114,7 +115,7 @@ def execute_query(request):
         sql_query = request.POST.get('query')
         try:
             with connection.cursor() as cursor:
-                cursor.execute("SET ROLE %s", [request.user.username])
+                # cursor.execute("SET ROLE %s", [request.user.username])
                 cursor.execute(sql_query)
                 
                 if sql_query.lower().startswith('select'):
