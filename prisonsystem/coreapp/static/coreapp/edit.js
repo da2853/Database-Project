@@ -4,7 +4,6 @@ const editForm = document.getElementById("edit-form");
 const closeBtn = document.getElementsByClassName("close")[0];
 const saveBtn = document.getElementById("save-btn");
 
-// Update the openEditModal function
 function openEditModal(table, record, event) {
     // Clear previous form fields
     editForm.innerHTML = "";
@@ -24,12 +23,6 @@ function openEditModal(table, record, event) {
     // Set the table and record ID as data attributes on the form
     editForm.dataset.table = table;
     editForm.dataset.recordId = record.Criminal_ID || record.Crime_ID;
-  
-    // Position the modal under the clicked edit button
-    const editButton = event.target;
-    const editButtonRect = editButton.getBoundingClientRect();
-    editModal.style.top = `${editButtonRect.bottom}px`;
-    editModal.style.left = `${editButtonRect.left}px`;
   
     // Open the modal
     editModal.style.display = "block";

@@ -52,9 +52,7 @@ document.getElementById("search-btn").addEventListener("click", function () {
               const editBtn = document.createElement("button");
               editBtn.textContent = "Edit";
               editBtn.addEventListener("click", function (event) {
-                if (confirm("Are you sure you want to edit this record?")) {
                   openEditModal(selectedTable, entry, event);
-                }
               });
               
               const deleteBtn = document.createElement("button");
