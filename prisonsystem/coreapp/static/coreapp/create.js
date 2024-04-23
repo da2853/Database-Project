@@ -179,3 +179,24 @@ function getPlaceholderText(fieldName) {
             return '';
     }
 }
+
+document.getElementById('create-form').addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    const form = event.target;
+    const requiredFields = form.querySelectorAll('[required]');
+    let isValid = true;
+
+    requiredFields.forEach(function(field) {
+        if (!field.value) {
+            field.classList.add('error');
+            isValid = false;
+        } else {
+            field.classList.remove('error');
+        }
+    });
+
+    if (isValid) {
+        form.submit();
+    }
+});

@@ -128,3 +128,24 @@ def logout_view(request):
     logout(request)
     return redirect('home')
 
+@csrf_protect
+@login_required
+def create_view(request):
+    if request.method == 'POST':
+        table = request.POST.get('table')
+        fields = request.POST.dict()
+        fields.pop('csrfmiddlewaretoken', None)
+        fields.pop('table', None)
+
+        placeholders = ', '.join(['%s'] * len(fields))
+        columns = ', '.join(fields.keys())
+        values = tuple(fields.values())
+
+        try:
+            with connection.cursor() as cursor:
+                cursor.execute(f"INSERT INTO {table} ({columns}) VALUES ({placeholders})", values)
+            messages.success(request, 'Record created successfully.')
+        except Exception as e:
+            messages.error(request, f'Error creating record: {str(e)}')
+
+    return render(request, 'coreapp/create.html')

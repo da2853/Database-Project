@@ -104,3 +104,23 @@ input::placeholder {
 input:focus::placeholder {
     color: transparent;
 }
+
+.messages {
+    margin-bottom: 20px;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.messages.error {
+    background-color: #ffdddd;
+    color: #ff0000;
+}
+
+.messages.success {
+    background-color: #ddffdd;
+    color: #008000;
+}
+
+.form-group input.error {
+    border-color: #ff0000;
+}
