@@ -310,7 +310,6 @@ def delete_record(request):
     data = json.loads(request.body)
     table = data.get('table')
     record = data.get('record')
-    print(record)
 
     try:
         with connection.cursor() as cursor:
@@ -387,7 +386,6 @@ def delete_record(request):
 
             elif table == 'officer_phone':
                 number = record['number']
-                print("number: ",number)
                 query = "DELETE FROM officer_phone WHERE number = %s"
                 cursor.execute(query, [number])
 
