@@ -206,24 +206,58 @@ def perform_search(request):
     except Exception as e:
         return JsonResponse({'success': False, 'error': 'An error occurred: ' + str(e)}, status=400)
 
-
 @csrf_exempt
 @login_required
 def edit_record(request):
     if request.method == 'POST':
         table = request.POST.get('table')
+        record_id_field = None
         record_id = request.POST.get('record_id')
         fields = request.POST.dict()
         fields.pop('csrfmiddlewaretoken', None)
         fields.pop('table', None)
         fields.pop('record_id', None)
 
+        if table == 'criminals':
+            record_id_field = 'Criminal_ID'
+        elif table == 'crimes':
+            record_id_field = 'Crime_ID'
+        elif table == 'charges':
+            record_id_field = 'Crime_ID'
+        elif table == 'sentencing':
+            record_id_field = 'Crime_ID'
+        elif table == 'criminal_phone':
+            record_id_field = 'Criminal_ID'
+        elif table == 'aliases':
+            record_id_field = 'Criminal_ID'
+        elif table == 'address':
+            record_id_field = 'Criminal_ID'
+        elif table == 'hearing':
+            record_id_field = 'Crime_ID'
+        elif table == 'monetary':
+            record_id_field = 'Crime_ID'
+        elif table == 'appeals':
+            record_id_field = 'Crime_ID'
+        elif table == 'arresting_officers':
+            record_id_field = 'Crime_ID'
+        elif table == 'officer':
+            record_id_field = 'Badge_Number'
+        elif table == 'officer_phone':
+            record_id_field = 'Badge_Number'
+        elif table == 'users':
+            record_id_field = 'user_id'
+        elif table == 'user_activity':
+            record_id_field = 'activity_id'
+
+        if record_id_field is None:
+            return JsonResponse({'success': False, 'error': 'Invalid table specified.'}, status=400)
+
         set_values = ', '.join([f"{key} = %s" for key in fields.keys()])
         values = tuple(fields.values()) + (record_id,)
 
         try:
             with connection.cursor() as cursor:
-                cursor.execute(f"UPDATE {table} SET {set_values} WHERE {'Criminal_ID' if table == 'criminals' else 'Crime_ID'} = %s", values)
+                cursor.execute(f"UPDATE {table} SET {set_values} WHERE {record_id_field} = %s", values)
             return JsonResponse({'success': True})
         except Exception as e:
             return JsonResponse({'success': False, 'error': str(e)}, status=400)
