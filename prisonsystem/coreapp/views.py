@@ -310,7 +310,6 @@ def delete_record(request):
     data = json.loads(request.body)
     table = data.get('table')
     record = data.get('record')
-    print(record)
 
     try:
         with connection.cursor() as cursor:
