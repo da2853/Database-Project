@@ -33,10 +33,10 @@ def user_profile(request):
 @csrf_protect
 def user_login(request):
     if request.method == 'POST':
-        email = request.POST.get('username')
+        email = request.POST.get('email')
         password = request.POST.get('password')
         user = authenticate(request, username=email, password=password)
-        if user is not None:
+        if user:
             login(request, user)
             return redirect('query')
         else:
@@ -53,7 +53,7 @@ def user_register(request):
             try:
                 with transaction.atomic():
                     if User.objects.filter(username=username).exists():
-                        form.add_error('email', 'Username already exists. Please choose a different one.')
+                        form.add_error('email', 'Email already in use. Please choose a different one.')
                     else:
                         # Save the user
                         user = form.save()
