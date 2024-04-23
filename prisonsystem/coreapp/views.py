@@ -268,15 +268,65 @@ def edit_record(request):
 @csrf_exempt
 @login_required
 def delete_record(request):
-    if request.method == 'POST':
-        table = request.POST.get('table')
-        record_id = request.POST.get('record_id')
+    if request.method != 'POST':
+        return JsonResponse({'success': False, 'error': 'Invalid request method.'}, status=400)
+    data = json.loads(request.body)
+    table = data.get('table')
+    primary_key = data.get('primary_key')
 
-        try:
-            with connection.cursor() as cursor:
-                cursor.execute(f"DELETE FROM {table} WHERE {'Criminal_ID' if table == 'criminals' else 'Crime_ID'} = %s", [record_id])
-            return JsonResponse({'success': True})
-        except Exception as e:
-            return JsonResponse({'success': False, 'error': str(e)}, status=400)
+    try:
+        with connection.cursor() as cursor:
+            if table == 'criminals':
+                # Delete related records from dependent tables first
+                delete_queries = [
+                    "DELETE FROM criminal_phone WHERE Criminal_ID = %s",
+                    "DELETE FROM aliases WHERE Criminal_ID = %s",
+                    "DELETE FROM address WHERE Criminal_ID = %s",
+                    "DELETE FROM crimes WHERE Criminal_ID = %s",
+                    "DELETE FROM criminals WHERE Criminal_ID = %s"
+                ]
+                for query in delete_queries:
+                    cursor.execute(query, [primary_key])
 
-    return JsonResponse({'success': False, 'error': 'Invalid request method.'}, status=400)
+            elif table == 'crimes':
+                # Delete related records from dependent tables first
+                delete_queries = [
+                    "DELETE FROM charges WHERE Crime_ID = %s",
+                    "DELETE FROM sentencing WHERE Crime_ID = %s",
+                    "DELETE FROM hearing WHERE Crime_ID = %s",
+                    "DELETE FROM monetary WHERE Crime_ID = %s",
+                    "DELETE FROM appeals WHERE Crime_ID = %s",
+                    "DELETE FROM arresting_officers WHERE Crime_ID = %s",
+                    "DELETE FROM crimes WHERE Crime_ID = %s"
+                ]
+                for query in delete_queries:
+                    cursor.execute(query, [primary_key])
+
+            elif table == 'officer':
+                # Delete related records from dependent tables first
+                delete_queries = [
+                    "DELETE FROM officer_phone WHERE Badge_Number = %s",
+                    "DELETE FROM arresting_officers WHERE Badge_ID = %s",
+                    "DELETE FROM officer WHERE Badge_Number = %s"
+                ]
+                for query in delete_queries:
+                    cursor.execute(query, [primary_key])
+
+            elif table == 'users':
+                # Delete related records from dependent tables first
+                delete_queries = [
+                    "DELETE FROM user_activity WHERE user_id = %s",
+                    "DELETE FROM users WHERE user_id = %s"
+                ]
+                for query in delete_queries:
+                    cursor.execute(query, [primary_key])
+
+            else:
+                # Delete the record from the specified table
+                delete_query = f"DELETE FROM {table} WHERE {table.capitalize()}_ID = %s"
+                cursor.execute(delete_query, [primary_key])
+
+        return JsonResponse({'success': True})
+
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': 'An error occurred: ' + str(e)}, status=400)
