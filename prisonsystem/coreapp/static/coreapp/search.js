@@ -4,6 +4,7 @@ document.getElementById("search-btn").addEventListener("click", function () {
   const resultsContainer = document.getElementById("results-container");
   resultsContainer.innerHTML = "";
   if (selectedTable && searchValue) {
+    closeEditModal();
     fetch("/perform-search/", {
       method: "POST",
       headers: {
@@ -39,33 +40,32 @@ document.getElementById("search-btn").addEventListener("click", function () {
             // Create table rows
             results.forEach((entry) => {
               const row = document.createElement("tr");
-      
+            
               Object.values(entry).forEach((value) => {
                 const cell = document.createElement("td");
                 cell.textContent = value;
                 row.appendChild(cell);
               });
-      
+            
               const actionsCell = document.createElement("td");
-      
+            
               const editBtn = document.createElement("button");
               editBtn.textContent = "Edit";
-              editBtn.addEventListener("click", function () {
-                // Handle edit action
-                openEditModal(selectedTable, entry);
+              editBtn.addEventListener("click", function (event) {
+                openEditModal(selectedTable, entry, event);
               });
-      
+            
               const deleteBtn = document.createElement("button");
               deleteBtn.textContent = "Delete";
               deleteBtn.addEventListener("click", function () {
                 // Handle delete action
                 deleteRecord(selectedTable, entry);
               });
-      
+            
               actionsCell.appendChild(editBtn);
               actionsCell.appendChild(deleteBtn);
               row.appendChild(actionsCell);
-      
+            
               table.appendChild(row);
             });
       
@@ -100,12 +100,6 @@ function getCookie(name) {
   return cookieValue;
 }
 
-function openEditModal(table, record) {
-  // Open a modal or dialog to edit the record
-  // Populate the form fields with the record data
-  // On form submission, send the updated data to the server
-  // Update the table with the edited record
-}
 
 function deleteRecord(table, record) {
   // Send a request to delete the record from the server

@@ -217,7 +217,7 @@ def edit_record(request):
         fields.pop('csrfmiddlewaretoken', None)
         fields.pop('table', None)
         fields.pop('record_id', None)
-
+        print("table: ", table)
         if table == 'criminals':
             record_id_field = 'Criminal_ID'
         elif table == 'crimes':

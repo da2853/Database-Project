@@ -5,29 +5,35 @@ const closeBtn = document.getElementsByClassName("close")[0];
 const saveBtn = document.getElementById("save-btn");
 
 // Update the openEditModal function
-function openEditModal(table, record) {
-  // Clear previous form fields
-  editForm.innerHTML = "";
-
-  // Generate form fields based on the table and record
-  Object.entries(record).forEach(([key, value]) => {
-    const label = document.createElement("label");
-    label.textContent = key;
-    const input = document.createElement("input");
-    input.type = "text";
-    input.name = key;
-    input.value = value;
-    editForm.appendChild(label);
-    editForm.appendChild(input);
-  });
-
-  // Set the table and record ID as data attributes on the form
-  editForm.dataset.table = table;
-  editForm.dataset.recordId = record.Criminal_ID || record.Crime_ID;
-
-  // Open the modal
-  editModal.style.display = "block";
-}
+function openEditModal(table, record, event) {
+    // Clear previous form fields
+    editForm.innerHTML = "";
+  
+    // Generate form fields based on the table and record
+    Object.entries(record).forEach(([key, value]) => {
+      const label = document.createElement("label");
+      label.textContent = key;
+      const input = document.createElement("input");
+      input.type = "text";
+      input.name = key;
+      input.value = value;
+      editForm.appendChild(label);
+      editForm.appendChild(input);
+    });
+  
+    // Set the table and record ID as data attributes on the form
+    editForm.dataset.table = table;
+    editForm.dataset.recordId = record.Criminal_ID || record.Crime_ID;
+  
+    // Position the modal under the clicked edit button
+    const editButton = event.target;
+    const editButtonRect = editButton.getBoundingClientRect();
+    editModal.style.top = `${editButtonRect.bottom}px`;
+    editModal.style.left = `${editButtonRect.left}px`;
+  
+    // Open the modal
+    editModal.style.display = "block";
+  }
 
 // Close the modal when the close button or outside the modal is clicked
 closeBtn.onclick = function () {
@@ -71,3 +77,7 @@ saveBtn.onclick = function () {
       console.error("Error editing record:", error);
     });
 };
+
+function closeEditModal() {
+    editModal.style.display = "none";
+  }

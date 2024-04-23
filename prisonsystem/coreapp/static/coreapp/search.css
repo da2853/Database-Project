@@ -10,6 +10,12 @@ header {
   padding: 20px;
 }
 
+#edit-modal {
+  display: none;
+  position: absolute;
+  z-index: 1;
+  /* ... */
+}
 nav ul {
   list-style-type: none;
   margin: 0;
