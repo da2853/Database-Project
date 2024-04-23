@@ -304,11 +304,11 @@ def delete_record(request):
     data = json.loads(request.body)
     table = data.get('table')
     record = data.get('record')
+    print(record)
 
     try:
         with connection.cursor() as cursor:
             if table == 'criminals':
-                # Delete related records from dependent tables first
                 criminal_id = record['criminal_id']
                 delete_queries = [
                     "DELETE FROM criminal_phone WHERE Criminal_ID = %s",
@@ -338,13 +338,55 @@ def delete_record(request):
                 badge_number = record['badge_number']
                 delete_queries = [
                     "DELETE FROM officer_phone WHERE Badge_Number = %s",
-                    "DELETE FROM arresting_officers WHERE Badge_Number = %s",
+                    "DELETE FROM arresting_officers WHERE Badge_ID = %s",
                     "DELETE FROM officer WHERE Badge_Number = %s"
                 ]
                 for query in delete_queries:
                     cursor.execute(query, [badge_number])
+
+            elif table == 'sentencing':
+                crime_id = record['crime_id']
+                query = "DELETE FROM sentencing WHERE crime_id = %s"
+                cursor.execute(query, [crime_id])
+
+            elif table == 'criminal_phone':
+                number = record['number']
+                query = "DELETE FROM criminal_phone WHERE number = %s"
+                cursor.execute(query, [number])
+            
+            elif table == 'aliases':
+                alias = record['alias']
+                query = "DELETE FROM aliases WHERE alias = %s"
+                cursor.execute(query, [alias])
+
+            elif table == 'address':
+                addr = record['addr']
+                query = "DELETE FROM address WHERE addr = %s"
+                cursor.execute(query, [addr])
+
+            elif table == 'hearing':
+                crime_id = record['crime_id']
+                query = "DELETE FROM hearing WHERE crime_id = %s"
+                cursor.execute(query, [crime_id])
+            
+            elif table == 'monetary':
+                crime_id = record['crime_id']
+                query = "DELETE FROM monetary WHERE crime_id = %s"
+                cursor.execute(query, [crime_id])
+            
+            elif table == 'appeals':
+                crime_id = record['crime_id']
+                query = "DELETE FROM appeals WHERE crime_id = %s"
+                cursor.execute(query, [crime_id])
+
+            elif table == 'officer_phone':
+                number = record['number']
+                print("number: ",number)
+                query = "DELETE FROM officer_phone WHERE number = %s"
+                cursor.execute(query, [number])
+
             else:
-                pass
+                return JsonResponse({'success': False, 'error': str(e)}, status=400)
 
         return JsonResponse({'success': True})
 
