@@ -95,3 +95,12 @@ footer {
     color: #fff;
     text-align: center;
 }
+
+input::placeholder {
+    color: #999;
+    opacity: 1;
+}
+
+input:focus::placeholder {
+    color: transparent;
+}

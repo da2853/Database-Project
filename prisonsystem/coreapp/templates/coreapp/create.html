@@ -23,7 +23,8 @@
             {% csrf_token %}
             <div class="form-group">
                 <label for="table-select">Select Table:</label>
-                <select id="table-select" name="table">
+                <select id="table-select" name="table" required>
+                    <option value="">Select a table</option>
                     <option value="criminals">Criminals</option>
                     <option value="crimes">Crimes</option>
                     <option value="charges">Charges</option>
