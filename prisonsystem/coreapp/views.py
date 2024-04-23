@@ -25,6 +25,11 @@ def search_view(request):
 
 @csrf_protect
 @login_required
+def activity(request):
+    return render(request, 'coreapp/activity.html')
+
+@csrf_protect
+@login_required
 def create_view(request):
     return render(request, 'coreapp/create.html')
 
