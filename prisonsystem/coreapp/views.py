@@ -185,10 +185,6 @@ def perform_search(request):
                     cursor.execute("SELECT * FROM officer WHERE Badge_Number = %s OR Name ILIKE %s OR Precinct ILIKE %s OR Officer_Status ILIKE %s", [search_value, f'%{search_value}%', f'%{search_value}%', f'%{search_value}%'])
                 elif table == 'officer_phone':
                     cursor.execute("SELECT * FROM officer_phone WHERE Badge_Number = %s OR Number ILIKE %s", [search_value, f'%{search_value}%'])
-                elif table == 'users':
-                    cursor.execute("SELECT * FROM users WHERE user_id = %s OR first_name ILIKE %s OR last_name ILIKE %s OR username ILIKE %s OR email ILIKE %s", [search_value, f'%{search_value}%', f'%{search_value}%', f'%{search_value}%', f'%{search_value}%'])
-                elif table == 'user_activity':
-                    cursor.execute("SELECT * FROM user_activity WHERE activity_id = %s OR user_id = %s OR activity_description ILIKE %s", [search_value, search_value, f'%{search_value}%'])
                 else:
                     return JsonResponse({'success': False, 'error': 'Invalid table selected.'}, status=400)
 
