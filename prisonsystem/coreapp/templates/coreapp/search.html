@@ -1,0 +1,57 @@
+{% load static %}
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Search Records - City Jail Data Repository</title>
+    <link rel="stylesheet" href="{% static 'coreapp/search.css' %}" />
+  </head>
+  <body>
+    <header>
+      <nav>
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/logout">Logout</a></li>
+        </ul>
+      </nav>
+    </header>
+    <div class="container">
+      <h1>Search Records</h1>
+      <div class="form-group">
+        <label for="table-select">Select Table:</label>
+        <select id="table-select" name="table" required>
+          <option value="">Select a table</option>
+          <option value="criminals">Criminals</option>
+          <option value="crimes">Crimes</option>
+          <option value="charges">Charges</option>
+          <option value="sentencing">Sentencing</option>
+          <option value="criminal_phone">Criminal Phone</option>
+          <option value="aliases">Aliases</option>
+          <option value="address">Address</option>
+          <option value="hearing">Hearing</option>
+          <option value="monetary">Monetary</option>
+          <option value="appeals">Appeals</option>
+          <option value="arresting_officers">Arresting Officers</option>
+          <option value="officer">Officer</option>
+          <option value="officer_phone">Officer Phone</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="search-input">Search:</label>
+        <input
+          type="text"
+          id="search-input"
+          name="search"
+          placeholder="Enter search value"
+        />
+        <button id="search-btn">Search</button>
+      </div>
+      <div id="results-container"></div>
+    </div>
+
+    <footer>
+      <p>2024 NYU School of Engineering</p>
+    </footer>
+    <script src="{% static 'coreapp/search.js' %}"></script>
+  </body>
+</html>
