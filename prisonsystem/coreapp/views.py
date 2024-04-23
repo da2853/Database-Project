@@ -215,15 +215,18 @@ from django.contrib.auth.decorators import login_required
 @csrf_exempt
 @login_required
 def edit_record(request):
+    print("start")
     if request.method != 'POST':
         return JsonResponse({'success': False, 'error': 'Invalid request method.'}, status=405)
     try:
         data = json.loads(request.body)
     except json.JSONDecodeError:
+        print("load faileds")
         return JsonResponse({'success': False, 'error': 'Invalid JSON.'}, status=400)
 
     table = data.get('table')
     record_id = data.get('record_id')
+    search_value = data.get('search_value')
 
     # Define a mapping from table names to their primary key fields
     table_to_id_field = {
@@ -245,7 +248,7 @@ def edit_record(request):
     }
 
     record_id_field = table_to_id_field.get(table)
-
+    print('checking')
     if not record_id_field:
         return JsonResponse({'success': False, 'error': 'Invalid table specified.'}, status=400)
 
@@ -253,13 +256,14 @@ def edit_record(request):
     fields[record_id_field] = record_id
 
     set_values = ', '.join([f"{key} = %({key})s" for key in fields.keys() if key != record_id_field])
-
+    print("fields: ", fields)
     try:
         with connection.cursor() as cursor:
             if table == 'charges':
                 cursor.execute(f"UPDATE charges SET {set_values} WHERE {record_id_field} = %({record_id_field})s", fields)
             elif table == 'arresting_officers':
-                cursor.execute(f"UPDATE arresting_officers SET {set_values} WHERE {record_id_field} = %({record_id_field})s AND Badge_ID = %(Badge_ID)s", fields)
+                query = f"SELECT * FROM arresting_officers WHERE Crime_ID = %s AND Badge_ID = %s"
+                cursor.execute(query, (int(search_value), int(search_value)))
             elif table == 'criminals':
                 cursor.execute(f"UPDATE criminals SET {set_values} WHERE {record_id_field} = %({record_id_field})s", fields)
             elif table == 'crimes':

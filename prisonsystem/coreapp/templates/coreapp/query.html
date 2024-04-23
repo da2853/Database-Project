@@ -1,98 +1,49 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Query Page - City Jail Data Repository</title>
-    <link rel="stylesheet" href="{% static 'coreapp/query.css' %}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-</head>
-
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Portal</title>
+    <link rel="stylesheet" href="{% static 'coreapp/query.css' %}" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    />
+  </head>
+  <body>
     <header>
         <nav>
             <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="/logout">Logout</a></li>
+              <li><a href="/">Home</a></li>
+              <li><a href="/search">Search</a></li>
+              <li><a href="/create">Create</a></li>
+              <li><a href="/logout">Logout</a></li>
             </ul>
-        </nav>
+          </nav>
     </header>
     <div class="container">
-        <h1>Query Portal</h1>
-
-        <div class="quick-access">
-            <div class="section">
-                <h2>Search</h2>
-                <a href="/search" class="button"><i class="fas fa-searchengin"></i> Search</a>
-
-            </div>
-            <div class="section">
-                <h2>Create</h2>
-                <a href="/create" class="button"><i class="fas fa-layer-plus"></i> Create</a>
-            </div>
-
+      <h1>Welcome to the Portal</h1>
+      <div class="quick-access">
+        <div class="section">
+          <a href="/search" class="button"
+            ><i class="fas fa-search"></i> Search</a
+          >
         </div>
-
-        <div class="query-box">
-            <textarea id="query-input" placeholder="Enter your SQL query here"></textarea>
-            <button id="execute-button">Execute</button>
-            <div id="query-result"></div>
+        <div class="section">
+          <a href="/create" class="button"
+            ><i class="fas fa-plus-circle"></i> Create</a
+          >
         </div>
-
+        <div class="section">
+          <a href="/activity" class="button"
+            ><i class="fas fa-chart-line"></i> Activity</a
+          >
+        </div>
+      </div>
     </div>
-
-    <footer>
-        <p>2024 NYU School of Engineering</p>
-    </footer>
-    <script>
-        $(document).ready(function () {
-            $('#execute-button').click(function () {
-                const query = $('#query-input').val();
-                if (confirm('Are you sure you want to execute this query?\n' + query)) {
-                    $.ajax({
-                        type: 'POST',
-                        url: '{% url "execute_query" %}',
-                        data: {
-                            'query': query,
-                            'csrfmiddlewaretoken': '{{ csrf_token }}'
-                        },
-                        success: function (response) {
-                            if (response.success) {
-                                if (response.results) {
-                                    // Display the query results
-                                    let resultHtml = '<table>';
-                                    resultHtml += '<tr>';
-                                    for (let column in response.results[0]) {
-                                        resultHtml += '<th>' + column + '</th>';
-                                    }
-                                    resultHtml += '</tr>';
-                                    for (let row of response.results) {
-                                        resultHtml += '<tr>';
-                                        for (let value of Object.values(row)) {
-                                            resultHtml += '<td>' + value + '</td>';
-                                        }
-                                        resultHtml += '</tr>';
-                                    }
-                                    resultHtml += '</table>';
-                                    $('#query-result').html(resultHtml);
-                                } else {
-                                    $('#query-result').text(response.message);
-                                }
-                            } else {
-                                $('#query-result').text('Error: ' + response.error);
-                            }
-                        },
-                        error: function () {
-                            $('#query-result').text('Error executing query.');
-                        }
-                    });
-                }
-            });
-        });
-    </script>
-</body>
-
+  </body>
+  <footer>
+    <p>2024 NYU School of Engineering</p>
+  </footer>
 </html>
