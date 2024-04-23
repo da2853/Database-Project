@@ -1,3 +1,4 @@
+import json
 from django.contrib.auth import authenticate, login, logout
 from django.db import transaction, IntegrityError
 from django.http import JsonResponse
@@ -153,51 +154,58 @@ def create_view(request):
 @csrf_exempt
 @login_required
 def perform_search(request):
-    if request.method == 'POST':
-        table = request.POST.get('table')
-        search_value = request.POST.get('search_value')
+    if request.method != 'POST':
+        return JsonResponse({'success': False, 'error': 'Invalid request method.'}, status=400)
+    data = json.loads(request.body)
+    table = data.get('table')
+    search_value = data.get('search_value', '')
 
-        try:
-            with connection.cursor() as cursor:
-                if table == 'criminals':
-                    cursor.execute("SELECT * FROM criminals WHERE Criminal_ID = %s OR Name ILIKE %s", [search_value, f'%{search_value}%'])
-                elif table == 'crimes':
-                    cursor.execute("SELECT * FROM crimes WHERE Crime_ID = %s OR Crime_Code ILIKE %s OR Classification ILIKE %s", [search_value, f'%{search_value}%', f'%{search_value}%'])
-                elif table == 'charges':
-                    cursor.execute("SELECT * FROM charges WHERE Crime_ID = %s OR Charge_Status ILIKE %s", [search_value, f'%{search_value}%'])
-                elif table == 'sentencing':
-                    cursor.execute("SELECT * FROM sentencing WHERE Crime_ID = %s OR Sentence_Type ILIKE %s", [search_value, f'%{search_value}%'])
-                elif table == 'criminal_phone':
-                    cursor.execute("SELECT * FROM criminal_phone WHERE Criminal_ID = %s OR Number ILIKE %s", [search_value, f'%{search_value}%'])
-                elif table == 'aliases':
-                    cursor.execute("SELECT * FROM aliases WHERE Criminal_ID = %s OR Alias ILIKE %s", [search_value, f'%{search_value}%'])
-                elif table == 'address':
-                    cursor.execute("SELECT * FROM address WHERE Criminal_ID = %s OR Addr ILIKE %s OR City ILIKE %s OR State ILIKE %s OR Zip_Code ILIKE %s", [search_value, f'%{search_value}%', f'%{search_value}%', f'%{search_value}%', f'%{search_value}%'])
-                elif table == 'hearing':
-                    cursor.execute("SELECT * FROM hearing WHERE Crime_ID = %s", [search_value])
-                elif table == 'monetary':
-                    cursor.execute("SELECT * FROM monetary WHERE Crime_ID = %s", [search_value])
-                elif table == 'appeals':
-                    cursor.execute("SELECT * FROM appeals WHERE Crime_ID = %s OR Appeal_Status ILIKE %s", [search_value, f'%{search_value}%'])
-                elif table == 'arresting_officers':
-                    cursor.execute("SELECT * FROM arresting_officers WHERE Crime_ID = %s OR Badge_ID = %s", [search_value, search_value])
-                elif table == 'officer':
-                    cursor.execute("SELECT * FROM officer WHERE Badge_Number = %s OR Name ILIKE %s OR Precinct ILIKE %s OR Officer_Status ILIKE %s", [search_value, f'%{search_value}%', f'%{search_value}%', f'%{search_value}%'])
-                elif table == 'officer_phone':
-                    cursor.execute("SELECT * FROM officer_phone WHERE Badge_Number = %s OR Number ILIKE %s", [search_value, f'%{search_value}%'])
-                else:
-                    return JsonResponse({'success': False, 'error': 'Invalid table selected.'}, status=400)
+    query_dict = {
+        'criminals': "SELECT * FROM criminals WHERE criminal_id = %s OR name ILIKE %s",
+        'crimes': "SELECT * FROM crimes WHERE Crime_ID = %s OR Crime_Code ILIKE %s OR Classification ILIKE %s",
+        'charges': "SELECT * FROM charges WHERE Crime_ID = %s OR Charge_Status ILIKE %s",
+        'sentencing': "SELECT * FROM sentencing WHERE Crime_ID = %s OR Sentence_Type ILIKE %s",
+        'criminal_phone': "SELECT * FROM criminal_phone WHERE Criminal_ID = %s OR Number ILIKE %s",
+        'aliases': "SELECT * FROM aliases WHERE Criminal_ID = %s OR Alias ILIKE %s",
+        'address': "SELECT * FROM address WHERE Criminal_ID = %s OR Addr ILIKE %s OR City ILIKE %s OR State ILIKE %s OR Zip_Code ILIKE %s",
+        'hearing': "SELECT * FROM hearing WHERE Crime_ID = %s OR Hearing_Date::text ILIKE %s OR Appeal_Cutoff_Date::text ILIKE %s",
+        'monetary': "SELECT * FROM monetary WHERE Crime_ID = %s",
+        'appeals': "SELECT * FROM appeals WHERE Crime_ID = %s OR Appeal_Status ILIKE %s",
+        'arresting_officers': "SELECT * FROM arresting_officers WHERE Crime_ID = %s OR Badge_ID = %s",
+        'officer': "SELECT * FROM officer WHERE Badge_Number = %s OR Name ILIKE %s OR Precinct ILIKE %s OR Officer_Status ILIKE %s",
+        'officer_phone': "SELECT * FROM officer_phone WHERE Badge_Number = %s OR Number ILIKE %s"
+    }
 
-                rows = cursor.fetchall()
-                columns = [col[0] for col in cursor.description]
-                results = [dict(zip(columns, row)) for row in rows]
+    try:
+        query = query_dict.get(table)
+        if not query:
+            return JsonResponse({'success': False, 'error': 'Invalid table selected.'}, status=400)
+        if search_value == '':
+            complete_query = "SELECT * FROM " + table
+        else:
+            params = [search_value] + ['%' + search_value + '%'] * (query.count('%s') - 1)
+            if table in ['criminals', 'criminal_phone', 'aliases', 'address', 'arresting_officers', 'charges', 'crimes', 'sentencing', 'officer', 'appeals', 'hearing', 'monetary', 'officer_phone']:
+                try:
+                    params[0] = int(search_value) if search_value.isdigit() else None
+                except ValueError:
+                    return JsonResponse({'success': False, 'error': 'Expected a numerical value.'}, status=400)
+            
+            complete_query = query
 
-                return JsonResponse({'success': True, 'results': results})
+        with connection.cursor() as cursor:
+            if search_value == '':
+                cursor.execute(complete_query)
+            else:
+                cursor.execute(complete_query, params)
+            rows = cursor.fetchall()
+            columns = [col[0] for col in cursor.description]
+            results = [dict(zip(columns, row)) for row in rows]
 
-        except Exception as e:
-            return JsonResponse({'success': False, 'error': str(e)}, status=400)
+        return JsonResponse({'success': True, 'results': results})
 
-    return JsonResponse({'success': False, 'error': 'Invalid request method.'}, status=400)
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': 'An error occurred: ' + str(e)}, status=400)
+
 
 @csrf_exempt
 @login_required

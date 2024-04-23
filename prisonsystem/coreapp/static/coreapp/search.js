@@ -22,51 +22,53 @@ document.getElementById("search-btn").addEventListener("click", function () {
           if (results.length > 0) {
             const table = document.createElement("table");
             const headerRow = document.createElement("tr");
-
+      
             // Create table header
             Object.keys(results[0]).forEach((key) => {
               const th = document.createElement("th");
               th.textContent = key;
               headerRow.appendChild(th);
             });
-
+      
             const actionsTh = document.createElement("th");
             actionsTh.textContent = "Actions";
             headerRow.appendChild(actionsTh);
-
+      
             table.appendChild(headerRow);
-
+      
             // Create table rows
             results.forEach((entry) => {
               const row = document.createElement("tr");
-
+      
               Object.values(entry).forEach((value) => {
                 const cell = document.createElement("td");
                 cell.textContent = value;
                 row.appendChild(cell);
               });
-
+      
+              const actionsCell = document.createElement("td");
+      
               const editBtn = document.createElement("button");
               editBtn.textContent = "Edit";
               editBtn.addEventListener("click", function () {
                 // Handle edit action
                 openEditModal(selectedTable, entry);
               });
-            
+      
               const deleteBtn = document.createElement("button");
               deleteBtn.textContent = "Delete";
               deleteBtn.addEventListener("click", function () {
                 // Handle delete action
                 deleteRecord(selectedTable, entry);
               });
-
+      
               actionsCell.appendChild(editBtn);
               actionsCell.appendChild(deleteBtn);
               row.appendChild(actionsCell);
-
+      
               table.appendChild(row);
             });
-
+      
             resultsContainer.appendChild(table);
           } else {
             resultsContainer.textContent = "No matching records found.";
