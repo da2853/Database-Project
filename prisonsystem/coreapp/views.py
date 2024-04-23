@@ -217,7 +217,9 @@ def edit_record(request):
         fields.pop('csrfmiddlewaretoken', None)
         fields.pop('table', None)
         fields.pop('record_id', None)
+        
         print("table: ", table)
+        
         if table == 'criminals':
             record_id_field = 'Criminal_ID'
         elif table == 'crimes':
@@ -248,22 +250,25 @@ def edit_record(request):
             record_id_field = 'user_id'
         elif table == 'user_activity':
             record_id_field = 'activity_id'
-
+        
         if record_id_field is None:
             return JsonResponse({'success': False, 'error': 'Invalid table specified.'}, status=400)
-
-        set_values = ', '.join([f"{key} = %s" for key in fields.keys()])
-        values = tuple(fields.values()) + (record_id,)
-
+        
+        # Remove the primary key field from the fields dictionary
+        fields.pop(record_id_field.lower(), None)
+        
+        set_values = ', '.join([f"{key} = %({key})s" for key in fields.keys()])
+        fields[record_id_field] = record_id
+        
         try:
             with connection.cursor() as cursor:
-                cursor.execute(f"UPDATE {table} SET {set_values} WHERE {record_id_field} = %s", values)
+                cursor.execute(f"UPDATE {table} SET {set_values} WHERE {record_id_field} = %({record_id_field})s", fields)
             return JsonResponse({'success': True})
         except Exception as e:
+            print("Database error:", str(e))
             return JsonResponse({'success': False, 'error': str(e)}, status=400)
-
+    
     return JsonResponse({'success': False, 'error': 'Invalid request method.'}, status=400)
-
 
 @csrf_exempt
 @login_required

@@ -52,14 +52,17 @@ document.getElementById("search-btn").addEventListener("click", function () {
               const editBtn = document.createElement("button");
               editBtn.textContent = "Edit";
               editBtn.addEventListener("click", function (event) {
-                openEditModal(selectedTable, entry, event);
+                if (confirm("Are you sure you want to edit this record?")) {
+                  openEditModal(selectedTable, entry, event);
+                }
               });
-            
+              
               const deleteBtn = document.createElement("button");
               deleteBtn.textContent = "Delete";
               deleteBtn.addEventListener("click", function () {
-                // Handle delete action
-                deleteRecord(selectedTable, entry);
+                if (confirm("Are you sure you want to delete this record?")) {
+                  deleteRecord(selectedTable, entry);
+                }
               });
             
               actionsCell.appendChild(editBtn);
