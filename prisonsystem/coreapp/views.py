@@ -1,4 +1,4 @@
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.db import transaction, IntegrityError
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_protect, csrf_exempt
@@ -17,35 +17,15 @@ def home(request):
     else:
         return render(request, 'coreapp/home.html')
 
-def add_inmate(request):
-    return render(request, 'coreapp/add/add_inmate.html')
+@csrf_protect
+@login_required
+def search_view(request):
+    return render(request, 'coreapp/search.html')
 
-def add_officer(request):
-    return render(request, 'coreapp/add/add_officer.html')
-
-def add_sentence(request):
-    return render(request, 'coreapp/add/add_sentence.html')
-
-def crime_details(request):
-    return render(request, 'coreapp/details/crime_details.html')
-
-def inmate_details(request):
-    return render(request, 'coreapp/details/inmate_details.html')
-
-def officer_details(request):
-    return render(request, 'coreapp/details/officer_details.html')
-
-def inmate_results(request):
-    return render(request, 'coreapp/results/inmate_results.html')
-
-def officer_results(request):
-    return render(request, 'coreapp/results/officer.results.html')
-
-def inmate_search(request):
-    return render(request, 'coreapp/search/inmate_search.html')
-
-def officer_search(request):
-    return render(request, 'coreapp/search/officer_search.html')
+@csrf_protect
+@login_required
+def create_view(request):
+    return render(request, 'coreapp/create.html')
 
 def user_profile(request):
     return render(request, 'coreapp/user/profile.html')
@@ -142,3 +122,9 @@ def execute_raw_sql(request):
         except Exception as e:
             return JsonResponse({'success': False, 'error': str(e)}, status=400)
     return JsonResponse({'success': False, 'error': 'Invalid request method.'}, status=400)
+
+
+def logout_view(request):
+    logout(request)
+    return redirect('home')
+
