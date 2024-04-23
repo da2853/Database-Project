@@ -206,68 +206,95 @@ def perform_search(request):
     except Exception as e:
         return JsonResponse({'success': False, 'error': 'An error occurred: ' + str(e)}, status=400)
 
+from django.http import JsonResponse
+import json
+from django.db import connection
+from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
+
 @csrf_exempt
 @login_required
 def edit_record(request):
-    if request.method == 'POST':
-        table = request.POST.get('table')
-        record_id_field = None
-        record_id = request.POST.get('record_id')
-        fields = request.POST.dict()
-        fields.pop('csrfmiddlewaretoken', None)
-        fields.pop('table', None)
-        fields.pop('record_id', None)
-        
-        if table == 'criminals':
-            record_id_field = 'Criminal_ID'
-        elif table == 'crimes':
-            record_id_field = 'Crime_ID'
-        elif table == 'charges':
-            record_id_field = 'Crime_ID'
-        elif table == 'sentencing':
-            record_id_field = 'Crime_ID'
-        elif table == 'criminal_phone':
-            record_id_field = 'Criminal_ID'
-        elif table == 'aliases':
-            record_id_field = 'Criminal_ID'
-        elif table == 'address':
-            record_id_field = 'Criminal_ID'
-        elif table == 'hearing':
-            record_id_field = 'Crime_ID'
-        elif table == 'monetary':
-            record_id_field = 'Crime_ID'
-        elif table == 'appeals':
-            record_id_field = 'Crime_ID'
-        elif table == 'arresting_officers':
-            record_id_field = 'Crime_ID'
-        elif table == 'officer':
-            record_id_field = 'Badge_Number'
-        elif table == 'officer_phone':
-            record_id_field = 'Badge_Number'
-        elif table == 'users':
-            record_id_field = 'user_id'
-        elif table == 'user_activity':
-            record_id_field = 'activity_id'
-        
-        if record_id_field is None:
-            return JsonResponse({'success': False, 'error': 'Invalid table specified.'}, status=400)
-        
-        # Remove the primary key field from the fields dictionary
-        fields.pop(record_id_field.lower(), None)
-        
-        set_values = ', '.join([f"{key} = %({key})s" for key in fields.keys()])
-        fields[record_id_field] = record_id
-        
-        try:
-            with connection.cursor() as cursor:
-                cursor.execute(f"SELECT retrieve_user_id_from_session(%s)", [request.user.id])
-                cursor.execute(f"UPDATE {table} SET {set_values} WHERE {record_id_field} = %({record_id_field})s", fields)
-            return JsonResponse({'success': True})
-        except Exception as e:
-            print("Database error:", str(e))
-            return JsonResponse({'success': False, 'error': str(e)}, status=400)
+    if request.method != 'POST':
+        return JsonResponse({'success': False, 'error': 'Invalid request method.'}, status=405)
+
+    try:
+        data = json.loads(request.body)
+    except json.JSONDecodeError:
+        return JsonResponse({'success': False, 'error': 'Invalid JSON.'}, status=400)
     
-    return JsonResponse({'success': False, 'error': 'Invalid request method.'}, status=400)
+    table = data.get('table')
+    record_id = data.get('record_id')
+    
+    # Define a mapping from table names to their primary key fields
+    table_to_id_field = {
+        'criminals': 'Criminal_ID',
+        'crimes': 'Crime_ID',
+        'charges': 'Crime_ID',
+        'sentencing': 'Crime_ID',
+        'criminal_phone': 'Criminal_ID',
+        'aliases': 'Criminal_ID',
+        'address': 'Criminal_ID',
+        'hearing': 'Crime_ID',
+        'monetary': 'Crime_ID',
+        'appeals': 'Crime_ID',
+        'arresting_officers': 'Crime_ID',
+        'officer': 'Badge_Number',
+        'officer_phone': 'Badge_Number',
+        'users': 'user_id',
+        'user_activity': 'activity_id'
+    }
+    
+    record_id_field = table_to_id_field.get(table)
+    
+    if not record_id_field:
+        return JsonResponse({'success': False, 'error': 'Invalid table specified.'}, status=400)
+    
+    fields = {key: value for key, value in data.items() if key not in ['csrfmiddlewaretoken', 'table', 'record_id']}
+    fields[record_id_field] = record_id
+    
+    set_values = ', '.join([f"{key} = %({key})s" for key in fields.keys() if key != record_id_field])
+    
+    try:
+        with connection.cursor() as cursor:
+            if table == 'charges':
+                cursor.execute(f"UPDATE charges SET {set_values} WHERE crime_id = %(crime_id)s OR CAST(charge_status AS TEXT) ILIKE %s", fields)
+            elif table == 'arresting_officers':
+                cursor.execute(f"UPDATE arresting_officers SET {set_values} WHERE crime_id = %(crime_id)s AND badge_id = %(badge_id)s", fields)
+            elif table == 'criminals':
+                cursor.execute(f"UPDATE criminals SET {set_values} WHERE criminal_id = %(criminal_id)s", fields)
+            elif table == 'crimes':
+                cursor.execute(f"UPDATE crimes SET {set_values} WHERE crime_id = %(crime_id)s", fields)
+            elif table == 'sentencing':
+                cursor.execute(f"UPDATE sentencing SET {set_values} WHERE crime_id = %(crime_id)s", fields)
+            elif table == 'criminal_phone':
+                cursor.execute(f"UPDATE criminal_phone SET {set_values} WHERE criminal_id = %(criminal_id)s", fields)
+            elif table == 'aliases':
+                cursor.execute(f"UPDATE aliases SET {set_values} WHERE criminal_id = %(criminal_id)s", fields)
+            elif table == 'address':
+                cursor.execute(f"UPDATE address SET {set_values} WHERE criminal_id = %(criminal_id)s", fields)
+            elif table == 'hearing':
+                cursor.execute(f"UPDATE hearing SET {set_values} WHERE crime_id = %(crime_id)s", fields)
+            elif table == 'monetary':
+                cursor.execute(f"UPDATE monetary SET {set_values} WHERE crime_id = %(crime_id)s", fields)
+            elif table == 'appeals':
+                cursor.execute(f"UPDATE appeals SET {set_values} WHERE crime_id = %(crime_id)s", fields)
+            elif table == 'officer':
+                cursor.execute(f"UPDATE officer SET {set_values} WHERE badge_number = %(badge_number)s", fields)
+            elif table == 'officer_phone':
+                cursor.execute(f"UPDATE officer_phone SET {set_values} WHERE badge_number = %(badge_number)s", fields)
+            elif table == 'users':
+                cursor.execute(f"UPDATE users SET {set_values} WHERE user_id = %(user_id)s", fields)
+            elif table == 'user_activity':
+                cursor.execute(f"UPDATE user_activity SET {set_values} WHERE activity_id = %(activity_id)s", fields)
+            else:
+                raise ValueError(f"Invalid table name: {table}")
+            return JsonResponse({'success': True})
+    except Exception as e:
+        if 'duplicate key value violates unique constraint' in str(e):
+            return JsonResponse({'success': False, 'error': 'Duplicate key value error.'}, status=409)
+        return JsonResponse({'success': False, 'error': str(e)}, status=400)
+
 
 @csrf_exempt
 @login_required
