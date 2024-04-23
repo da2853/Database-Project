@@ -60,6 +60,15 @@ document.getElementById("search-btn").addEventListener("click", function () {
               deleteBtn.addEventListener("click", function () {
                 if (confirm("Are you sure you want to delete this record?")) {
                   deleteRecord(selectedTable, entry);
+                  while (table.rows.length > 0) {
+                    table.deleteRow(0);
+                  }
+                  // Create a new row for the deletion message
+                  const row = table.insertRow();
+                  const cell = row.insertCell();
+                  cell.colSpan = table.rows[0].cells.length;
+                  cell.textContent = "Record deleted successfully.";
+                  cell.classList.add("deletion-message");
                 }
               });
             
@@ -112,7 +121,7 @@ function deleteRecord(table, record) {
     },
     body: JSON.stringify({
       table: table,
-      record_id: record.Criminal_ID || record.Crime_ID,
+      record: record,
     }),
   })
     .then((response) => response.json())
