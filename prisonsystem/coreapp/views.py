@@ -137,13 +137,13 @@ def create_view(request):
         fields = request.POST.dict()
         fields.pop('csrfmiddlewaretoken', None)
         fields.pop('table', None)
-
         placeholders = ', '.join(['%s'] * len(fields))
         columns = ', '.join(fields.keys())
         values = tuple(fields.values())
-
+        
         try:
             with connection.cursor() as cursor:
+                cursor.execute(f"SELECT retrieve_user_id_from_session(%s)", [request.user.id])
                 cursor.execute(f"INSERT INTO {table} ({columns}) VALUES ({placeholders})", values)
             messages.success(request, 'Record created successfully.')
         except Exception as e:
@@ -218,8 +218,6 @@ def edit_record(request):
         fields.pop('table', None)
         fields.pop('record_id', None)
         
-        print("table: ", table)
-        
         if table == 'criminals':
             record_id_field = 'Criminal_ID'
         elif table == 'crimes':
@@ -262,6 +260,7 @@ def edit_record(request):
         
         try:
             with connection.cursor() as cursor:
+                cursor.execute(f"SELECT retrieve_user_id_from_session(%s)", [request.user.id])
                 cursor.execute(f"UPDATE {table} SET {set_values} WHERE {record_id_field} = %({record_id_field})s", fields)
             return JsonResponse({'success': True})
         except Exception as e:
@@ -279,6 +278,7 @@ def delete_record(request):
 
         try:
             with connection.cursor() as cursor:
+                cursor.execute(f"SELECT retrieve_user_id_from_session(%s)", [request.user.id])
                 cursor.execute(f"DELETE FROM {table} WHERE {'Criminal_ID' if table == 'criminals' else 'Crime_ID'} = %s", [record_id])
             return JsonResponse({'success': True})
         except Exception as e:
