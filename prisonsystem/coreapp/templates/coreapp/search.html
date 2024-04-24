@@ -8,15 +8,15 @@
   </head>
   <body>
     <header>
-        <nav>
-            <ul>
-              <li><a href="/">Home</a></li>
-              <li><a href="/search">Search</a></li>
-              <li><a href="/create">Create</a></li>
-              <li><a href="/activity">Activity</a></li>
-              <li><a href="/logout">Logout</a></li>
-            </ul>
-          </nav>
+      <nav>
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/search">Search</a></li>
+          <li><a href="/create">Create</a></li>
+          <li><a href="/activity">Activity</a></li>
+          <li><a href="/logout">Logout</a></li>
+        </ul>
+      </nav>
     </header>
     <div class="container">
       <h1>Search Records</h1>
@@ -54,8 +54,7 @@
         <div class="modal-content">
           <span class="close">&times;</span>
           <h2>Edit Record</h2>
-          <form id="edit-form">
-          </form>
+          <form id="edit-form"></form>
           <button type="submit" id="save-btn">Save</button>
         </div>
       </div>
@@ -64,6 +63,9 @@
     <footer>
       <p>2024 NYU School of Engineering</p>
     </footer>
+    <script>
+      var hasWriteAccess = {{ has_write_access|lower }};
+    </script>
     <script src="{% static 'coreapp/search.js' %}"></script>
     <script src="{% static 'coreapp/edit.js' %}"></script>
   </body>

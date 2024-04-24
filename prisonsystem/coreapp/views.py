@@ -11,6 +11,11 @@ from django.urls import reverse
 from .forms import UserRegisterForm
 from django.db import connection
 
+def check_write_access(request):
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT EXISTS(SELECT 1 FROM write_access WHERE username = %s)", [request.user.username])
+        has_write_access = cursor.fetchone()[0]
+    return has_write_access
 
 def home(request):
     if request.user.is_authenticated:
@@ -21,12 +26,8 @@ def home(request):
 @csrf_protect
 @login_required
 def search_view(request):
-    return render(request, 'coreapp/search.html')
-
-# @csrf_protect
-# @login_required
-# def activity(request):
-#     return render(request, 'coreapp/activity.html')
+    has_write_access = check_write_access(request)
+    return render(request, 'coreapp/search.html', {'has_write_access': has_write_access})
 
 @csrf_protect
 @login_required
@@ -92,7 +93,9 @@ def query(request):
                 return JsonResponse({'success': 'Query executed successfully.'})
         except Exception as e:
             return JsonResponse({'error': str(e)})
-    return render(request, 'coreapp/query.html')
+    
+    has_write_access = check_write_access(request)
+    return render(request, 'coreapp/query.html', {'has_write_access': has_write_access})
 
 @csrf_exempt
 @login_required
@@ -137,6 +140,10 @@ def logout_view(request):
 @csrf_protect
 @login_required
 def create_view(request):
+    if not check_write_access(request):
+        messages.error(request, 'You do not have write access.')
+        return redirect('home')
+    
     if request.method == 'POST':
         table = request.POST.get('table')
         fields = request.POST.dict()
@@ -220,7 +227,9 @@ from django.contrib.auth.decorators import login_required
 @csrf_exempt
 @login_required
 def edit_record(request):
-    print("start")
+    if not check_write_access(request):
+        return JsonResponse({'success': False, 'error': 'You do not have write access.'}, status=403)
+    
     if request.method != 'POST':
         return JsonResponse({'success': False, 'error': 'Invalid request method.'}, status=405)
     try:
@@ -305,6 +314,9 @@ def edit_record(request):
 @csrf_exempt
 @login_required
 def delete_record(request):
+    if not check_write_access(request):
+        return JsonResponse({'success': False, 'error': 'You do not have write access.'}, status=403)
+
     if request.method != 'POST':
         return JsonResponse({'success': False, 'error': 'Invalid request method.'}, status=400)
     data = json.loads(request.body)

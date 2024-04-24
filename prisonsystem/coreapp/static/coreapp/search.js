@@ -40,45 +40,46 @@ document.getElementById("search-btn").addEventListener("click", function () {
             // Create table rows
             results.forEach((entry) => {
               const row = document.createElement("tr");
-            
               Object.values(entry).forEach((value) => {
                 const cell = document.createElement("td");
                 cell.textContent = value;
                 row.appendChild(cell);
               });
-            
-              const actionsCell = document.createElement("td");
-            
-              const editBtn = document.createElement("button");
-              editBtn.textContent = "Edit";
-              editBtn.addEventListener("click", function (event) {
+
+              if (hasWriteAccess) {
+                const actionsCell = document.createElement("td");
+                const editBtn = document.createElement("button");
+                editBtn.textContent = "Edit";
+                editBtn.addEventListener("click", function (event) {
                   openEditModal(selectedTable, entry, event);
-              });
-              
-              const deleteBtn = document.createElement("button");
-              deleteBtn.textContent = "Delete";
-              deleteBtn.addEventListener("click", function () {
-                if (confirm("Are you sure you want to delete this record?")) {
-                  deleteRecord(selectedTable, entry);
-                  while (table.rows.length > 0) {
-                    table.deleteRow(0);
+                });
+
+                const deleteBtn = document.createElement("button");
+                deleteBtn.textContent = "Delete";
+                deleteBtn.addEventListener("click", function () {
+                  if (confirm("Are you sure you want to delete this record?")) {
+                    deleteRecord(selectedTable, entry);
+                    while (table.rows.length > 0) {
+                      table.deleteRow(0);
+                    }
+                    // Create a new row for the deletion message
+                    const row = table.insertRow();
+                    const cell = row.insertCell();
+                    cell.colSpan = table.rows[0].cells.length;
+                    cell.textContent = "Record deleted successfully.";
+                    cell.classList.add("deletion-message");
                   }
-                  // Create a new row for the deletion message
-                  const row = table.insertRow();
-                  const cell = row.insertCell();
-                  cell.colSpan = table.rows[0].cells.length;
-                  cell.textContent = "Record deleted successfully.";
-                  cell.classList.add("deletion-message");
-                }
-              });
-            
-              actionsCell.appendChild(editBtn);
-              actionsCell.appendChild(deleteBtn);
-              row.appendChild(actionsCell);
-            
+                });
+
+                actionsCell.appendChild(editBtn);
+                actionsCell.appendChild(deleteBtn);
+                row.appendChild(actionsCell);
+              }
+
               table.appendChild(row);
             });
-      
+            
+     
             resultsContainer.appendChild(table);
           } else {
             resultsContainer.textContent = "No matching records found.";

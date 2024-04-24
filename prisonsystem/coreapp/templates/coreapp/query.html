@@ -13,15 +13,15 @@
   </head>
   <body>
     <header>
-        <nav>
-            <ul>
-              <li><a href="/">Home</a></li>
-              <li><a href="/search">Search</a></li>
-              <li><a href="/create">Create</a></li>
-              <li><a href="/activity">Activity</a></li>
-              <li><a href="/logout">Logout</a></li>
-            </ul>
-          </nav>
+      <nav>
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/search">Search</a></li>
+          <li><a href="/create">Create</a></li>
+          <li><a href="/activity">Activity</a></li>
+          <li><a href="/logout">Logout</a></li>
+        </ul>
+      </nav>
     </header>
     <div class="container">
       <h1>Welcome to the Portal</h1>
@@ -42,6 +42,14 @@
           >
         </div>
       </div>
+      {% if has_write_access %}
+      <p>{{ request.user.username }} has permission write access. You can create, edit, and delete data.</p>
+      {% else %}
+      <p>
+        {{ request.user.username }} does not have write access. You will not be
+        able to create, edit, or delete data.
+      </p>
+      {% endif %}
     </div>
   </body>
   <footer>
