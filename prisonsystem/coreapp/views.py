@@ -23,10 +23,10 @@ def home(request):
 def search_view(request):
     return render(request, 'coreapp/search.html')
 
-@csrf_protect
-@login_required
-def activity(request):
-    return render(request, 'coreapp/activity.html')
+# @csrf_protect
+# @login_required
+# def activity(request):
+#     return render(request, 'coreapp/activity.html')
 
 @csrf_protect
 @login_required
@@ -356,3 +356,25 @@ def delete_record(request):
 
     except Exception as e:
         return JsonResponse({'success': False, 'error': str(e)}, status=400)
+
+@csrf_protect
+@login_required
+def activity_view(request):
+    user_id = request.GET.get('user_id')
+    
+    try:
+        with connection.cursor() as cursor:
+            if user_id:
+                cursor.execute("SELECT * FROM User_Activity WHERE user_id = %s ORDER BY activity_timestamp DESC", [user_id])
+            else:
+                cursor.execute("SELECT * FROM User_Activity ORDER BY activity_timestamp DESC")
+            
+            activity_logs = cursor.fetchall()
+            
+            column_names = [col[0] for col in cursor.description]
+            activity_logs = [dict(zip(column_names, log)) for log in activity_logs]
+    except Exception as e:
+        activity_logs = None
+        print(f"Error retrieving activity logs: {str(e)}")
+    
+    return render(request, 'coreapp/activity.html', {'activity_logs': activity_logs})

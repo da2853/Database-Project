@@ -15,5 +15,5 @@ urlpatterns = [
     path('edit-record/', views.edit_record, name='edit_record'),
     path('delete-record/', views.delete_record, name='delete_record'),
     path('perform-search/', views.perform_search, name='perform_search'),
-    path('activity/', views.activity, name='activity')
+    path('activity/', views.activity_view, name='activity')
 ]
